@@ -186,3 +186,12 @@ button.secondary {
     filter: invert();
   }
 }
+
+.title {
+  align-items: left;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-synthesis: none;
+}
