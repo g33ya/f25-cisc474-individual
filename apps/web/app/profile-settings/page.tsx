@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function Home() {
     return (
         <div className={styles.main}>
-            <h1>CISC474 Course Page</h1>
+            <h1>Profile Settings</h1>
             <hr />
         </div>
     );

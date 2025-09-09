@@ -12,6 +12,11 @@ export default function Home() {
                  <Link href="/course-page">
                     <button className={styles.button}>CISC474</button>
                 </Link>
+
+                <Link href="/profile-settings">
+                    <button className={styles.button}>Profile Settings</button>
+                </Link>
+                
         </div>
     );
 }
