@@ -1,4 +1,4 @@
-import styles from "./page.module.css";
+"use client";
 import CoursesTab from "./courses/page";
 
 export default function Home() { 
