@@ -12,8 +12,14 @@ const courseAssignments: Record<string, { title: string; description: string }> 
   },
 };
 
-export default function CoursePage({ params }: { params: { slug: string } }) {
-  const course = courseAssignments[params.slug];
+export default async function CoursePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+
+  const { slug } = await params;
+  const course = courseAssignments[slug];
 
   if (!course) {
     return <h2>Course assignments not found</h2>;
@@ -22,8 +28,7 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
   return (
     <div className={styles.main}>
       <h2 className={styles.header}>{course.title}</h2>
-      <hr/>
-
+      <hr />
       <p>{course.description}</p>
     </div>
   );

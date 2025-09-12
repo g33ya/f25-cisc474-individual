@@ -12,8 +12,14 @@ const courseInformation: Record<string, { title: string; description: string }> 
   },
 };
 
-export default function CoursePage({ params }: { params: { slug: string } }) {
-  const course = courseInformation[params.slug];
+export default async function CourseInfoPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  
+  const { slug } = await params;
+  const course = courseInformation[slug];
 
   if (!course) {
     return <h2>Course information not found</h2>;

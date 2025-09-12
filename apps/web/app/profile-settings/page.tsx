@@ -31,7 +31,7 @@ export default function Home() {
             <p><strong>Name:</strong> Jane Doe</p>
             <p><strong>Pronouns:</strong> She/hers</p>
             <p><strong>Roles:</strong> Learner</p>
-            <Button className={styles.profileSettingsEditButton}>Edit</Button>
+            <Button appName="profile-settings" className={styles.profileSettingsEditButton}>Edit</Button>
 
           </div>
           

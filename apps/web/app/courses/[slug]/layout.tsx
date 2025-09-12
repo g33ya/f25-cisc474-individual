@@ -1,15 +1,17 @@
 import CourseNavbar from "../../(components)/CourseNavbar";
 
-export default function CourseLayout({
+export default async function CourseLayout({
   children,
   params,
 }: {
   children: React.ReactNode; // content of page
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+    const { slug } = await params;
+
   return (
     <div>
-      <CourseNavbar slug={params.slug} />
+      <CourseNavbar slug={slug} />
       <main>{children}</main>
     </div>
   );
