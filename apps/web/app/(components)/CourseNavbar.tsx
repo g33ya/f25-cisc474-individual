@@ -1,29 +1,27 @@
 "use client";
-// NOT YET IMPLEMENTED.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "../page.module.css";
 
-interface NavLink {
-  href: string;
-  label: string;
+interface Props {
+  slug: string;
 }
 
-export default function CourseNavbar(){
-  const pathname = usePathname();
+export default function CourseNavbar({ slug }: Props) {
+  const pathname = usePathname(); // current URL user is on
 
-  const links: NavLink[] = [
-    { href: "/", label: "Course Information" },
-    { href: "/", label: "Assignments" },
+  const links = [
+    { href: `/courses/${slug}/course-info`, label: "Course Information" },
+    { href: `/courses/${slug}/assignments`, label: "Assignments" },
   ];
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={styles.coursenavbar}>
       {links.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className={`${styles["nav-link"]} ${pathname === link.href ? styles.active : ""}`}
+          className={`${styles["course-nav-link"]} ${pathname === link.href ? styles.active : ""}`} // style based on active page
         >
           {link.label}
         </Link>

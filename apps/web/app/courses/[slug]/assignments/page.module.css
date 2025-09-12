@@ -1,0 +1,12 @@
+/* ChatGPT was used as assistance for generating the below CSS */
+
+.main {
+    width: 95%;
+    margin: 0 auto; 
+}
+
+.header {
+  color: #7a0e55;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}

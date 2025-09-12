@@ -38,7 +38,7 @@ export default function CoursesTab() {
 
       <div className={styles.grid}>
         {courses.map((course) => (
-          <Link key={course.id} href={`/courses/${course.code.toLowerCase()}`} className={styles.card}>
+          <Link key={course.id} href={`/courses/${course.code.toLowerCase()}/course-info`} className={styles.card}>
             <div className={styles.cardHeader}>
               <strong>
                 {course.code}: {course.name}

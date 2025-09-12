@@ -240,3 +240,26 @@ button.secondary {
   background: #bbb;
   margin: 0 0 1.5rem 0;
 }
+
+.coursenavbar {
+  display: flex;
+  border-bottom: 2px solid #bbb;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.course-nav-link {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: #969595;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+}
+
+.course-nav-link.active {
+  color: #7a0044;
+  font-weight: bold;
+  text-decoration: underline;
+}
