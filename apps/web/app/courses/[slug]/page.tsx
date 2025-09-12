@@ -1,9 +1,5 @@
 import styles from "./page.module.css";
 
-interface CoursePageProps {
-  params: { slug: string };
-}
-
 // Hardcoded for now, will need to make dynamic when we have backend connected
 const courseDetails: Record<string, { title: string; description: string }> = {
   cisc474: {
@@ -16,7 +12,7 @@ const courseDetails: Record<string, { title: string; description: string }> = {
   },
 };
 
-export default function CoursePage({ params }: CoursePageProps) {
+export default function CoursePage({ params }: { params: { slug: string } }) {
   const course = courseDetails[params.slug];
 
   if (!course) {
