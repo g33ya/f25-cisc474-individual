@@ -12,7 +12,7 @@ const courseAssignments: Record<string, { title: string; description: string }> 
   },
 };
 
-export default async function CoursePage({
+export default async function AssignmentsPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
