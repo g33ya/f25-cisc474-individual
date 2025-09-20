@@ -1,0 +1,10 @@
+id,email,last_name,first_name,preferred_name,pronouns,profile_picture,created_at,updated_at
+1,alice@student.edu,Johnson,Alice,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+2,bob@student.edu,Smith,Bob,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+3,dr.miller@uni.edu,Miller,Evelyn,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+4,admin@uni.edu,Lee,Sam,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+5,carol@student.edu,Nguyen,Carol,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+6,dan@student.edu,Patel,Dan,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+7,dr.taylor@uni.edu,Taylor,Marcus,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+8,emily@student.edu,Garcia,Emily,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
+9,frank@student.edu,Kim,Frank,,,,2025-09-17 21:57:07.105,2025-09-17 21:57:07.105
