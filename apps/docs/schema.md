@@ -8,4 +8,4 @@
 - [Grade](https://github.com/g33ya/f25-cisc474-individual/blob/main/apps/docs/table_data/Grade_rows.csv)
 - [Notification](https://github.com/g33ya/f25-cisc474-individual/blob/main/apps/docs/table_data/Notification_rows.csv)
 - [Submission](https://github.com/g33ya/f25-cisc474-individual/blob/main/apps/docs/table_data/Submission_rows.csv)
-- [Users](https://github.com/g33ya/f25-cisc474-individual/blob/main/apps/docs/table_data/User_rows.csv)
+- [User](https://github.com/g33ya/f25-cisc474-individual/blob/main/apps/docs/table_data/User_rows.csv)
