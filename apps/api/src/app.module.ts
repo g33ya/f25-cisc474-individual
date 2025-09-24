@@ -7,9 +7,10 @@ import { AppController } from './app.controller';
 import { UsersModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AssignmentModule } from './assignment/assignment.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
-  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule],
+  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule, CourseModule],
   controllers: [AppController],
   providers: [AppService],
 })
