@@ -10,9 +10,10 @@ import { AssignmentModule } from './assignment/assignment.module';
 import { CourseModule } from './course/course.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
 import { GradeModule } from './grade/grade.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
-  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule, CourseModule, EnrollmentModule, GradeModule],
+  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule, CourseModule, EnrollmentModule, GradeModule, NotificationModule],
   controllers: [AppController],
   providers: [AppService],
 })
