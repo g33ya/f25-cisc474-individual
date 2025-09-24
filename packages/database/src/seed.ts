@@ -1,21 +1,83 @@
 import { prisma } from "./client";
 
 async function main() {
+
   // ---------------- USERS ----------------
   await prisma.user.createMany({
     data: [
-      { id: 1, email: "alice@student.edu", first_name: "Alice", last_name: "Johnson" },
-      { id: 2, email: "bob@student.edu",   first_name: "Bob",   last_name: "Smith" },
-      { id: 3, email: "dr.miller@uni.edu", first_name: "Evelyn",last_name: "Miller" }, // Instructor
-      { id: 4, email: "admin@uni.edu",     first_name: "Sam",   last_name: "Lee" },    // Admin
-      { id: 5, email: "carol@student.edu", first_name: "Carol", last_name: "Nguyen" },
-      { id: 6, email: "dan@student.edu",   first_name: "Dan",   last_name: "Patel" },
-      { id: 7, email: "dr.taylor@uni.edu", first_name: "Marcus",last_name: "Taylor" }, // Instructor
-      { id: 8, email: "emily@student.edu", first_name: "Emily", last_name: "Garcia" },
-      { id: 9, email: "frank@student.edu", first_name: "Frank", last_name: "Kim" }
+      { 
+        id: 1, 
+        email: "alice@student.edu", 
+        first_name: "Alice", 
+        last_name: "Johnson", 
+        preferred_name: "Ali", 
+        pronouns: "she/her", 
+        profile_picture: "https://example.com/alice.jpg" 
+      },
+      { 
+        id: 2, 
+        email: "bob@student.edu",   
+        first_name: "Bob",   
+        last_name: "Smith", 
+        pronouns: "he/him" 
+      },
+      { 
+        id: 3, 
+        email: "dr.miller@uni.edu", 
+        first_name: "Evelyn",
+        last_name: "Miller", 
+        preferred_name: "Dr. Miller", 
+        pronouns: "she/her", 
+        profile_picture: "https://example.com/miller.png" 
+      },
+      { 
+        id: 4, 
+        email: "admin@uni.edu",     
+        first_name: "Sam",   
+        last_name: "Lee",    
+        pronouns: "they/them" 
+      },
+      { 
+        id: 5, 
+        email: "carol@student.edu", 
+        first_name: "Carol", 
+        last_name: "Nguyen", 
+        pronouns: "she/her" 
+      },
+      { 
+        id: 6, 
+        email: "dan@student.edu",   
+        first_name: "Dan",   
+        last_name: "Patel", 
+        profile_picture: "https://example.com/dan.jpg" 
+      },
+      { 
+        id: 7, 
+        email: "dr.taylor@uni.edu", 
+        first_name: "Marcus",
+        last_name: "Taylor", 
+        preferred_name: "Prof. Taylor", 
+        pronouns: "he/him" 
+      },
+      { 
+        id: 8, 
+        email: "emily@student.edu", 
+        first_name: "Emily", 
+        last_name: "Garcia", 
+        pronouns: "she/her" 
+      },
+      { 
+        id: 9, 
+        email: "frank@student.edu", 
+        first_name: "Frank", 
+        last_name: "Kim", 
+        pronouns: "he/him", 
+        profile_picture: "https://example.com/frank.png" 
+      }
     ],
     skipDuplicates: true,
   });
+
 
   // ---------------- COURSES ----------------
   await prisma.course.createMany({
