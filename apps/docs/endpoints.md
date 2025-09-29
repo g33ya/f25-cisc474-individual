@@ -1,21 +1,21 @@
 # Backend Endpoints
 ## Endpoints (7)
-- Assignment
+- Assignments
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/assignments)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/assignments/201)
-- Course
+- Courses
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/courses)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/courses/101)
-- Enrollment
+- Enrollments
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/enrollments)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/enrollments/1)
-- Grade
+- Grades
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/grades)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/grades/401)
-- Notification
+- Notifications
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/notifications)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/notifications/501)
-- Submission
+- Submissions
   - [All Rows](https://f25-cisc474-individual-9vy7.onrender.com/submissions)
   - [Specific Row](https://f25-cisc474-individual-9vy7.onrender.com/submissions/301)
 - Users
