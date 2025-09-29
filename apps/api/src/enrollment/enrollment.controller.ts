@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
 
-@Controller('enrollment')
+@Controller('enrollments')
 export class EnrollmentController {
     constructor(private enrollmentService: EnrollmentService) {}
 
