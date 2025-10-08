@@ -9,38 +9,120 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileSettingsRouteImport } from './routes/profile-settings'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesCourseIdRouteImport } from './routes/courses.$courseId'
+import { Route as CoursesCourseIdCourseInfoRouteImport } from './routes/courses.$courseId.course-info'
+import { Route as CoursesCourseIdAssignmentsRouteImport } from './routes/courses.$courseId.assignments'
 
+const ProfileSettingsRoute = ProfileSettingsRouteImport.update({
+  id: '/profile-settings',
+  path: '/profile-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesCourseIdRoute = CoursesCourseIdRouteImport.update({
+  id: '/$courseId',
+  path: '/$courseId',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesCourseIdCourseInfoRoute =
+  CoursesCourseIdCourseInfoRouteImport.update({
+    id: '/course-info',
+    path: '/course-info',
+    getParentRoute: () => CoursesCourseIdRoute,
+  } as any)
+const CoursesCourseIdAssignmentsRoute =
+  CoursesCourseIdAssignmentsRouteImport.update({
+    id: '/assignments',
+    path: '/assignments',
+    getParentRoute: () => CoursesCourseIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/profile-settings': typeof ProfileSettingsRoute
+  '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
+  '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/profile-settings': typeof ProfileSettingsRoute
+  '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
+  '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/courses': typeof CoursesRouteWithChildren
+  '/profile-settings': typeof ProfileSettingsRoute
+  '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
+  '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/courses'
+    | '/profile-settings'
+    | '/courses/$courseId'
+    | '/courses/$courseId/assignments'
+    | '/courses/$courseId/course-info'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/courses'
+    | '/profile-settings'
+    | '/courses/$courseId'
+    | '/courses/$courseId/assignments'
+    | '/courses/$courseId/course-info'
+  id:
+    | '__root__'
+    | '/'
+    | '/courses'
+    | '/profile-settings'
+    | '/courses/$courseId'
+    | '/courses/$courseId/assignments'
+    | '/courses/$courseId/course-info'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CoursesRoute: typeof CoursesRouteWithChildren
+  ProfileSettingsRoute: typeof ProfileSettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile-settings': {
+      id: '/profile-settings'
+      path: '/profile-settings'
+      fullPath: '/profile-settings'
+      preLoaderRoute: typeof ProfileSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/$courseId': {
+      id: '/courses/$courseId'
+      path: '/$courseId'
+      fullPath: '/courses/$courseId'
+      preLoaderRoute: typeof CoursesCourseIdRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/$courseId/course-info': {
+      id: '/courses/$courseId/course-info'
+      path: '/course-info'
+      fullPath: '/courses/$courseId/course-info'
+      preLoaderRoute: typeof CoursesCourseIdCourseInfoRouteImport
+      parentRoute: typeof CoursesCourseIdRoute
+    }
+    '/courses/$courseId/assignments': {
+      id: '/courses/$courseId/assignments'
+      path: '/assignments'
+      fullPath: '/courses/$courseId/assignments'
+      preLoaderRoute: typeof CoursesCourseIdAssignmentsRouteImport
+      parentRoute: typeof CoursesCourseIdRoute
+    }
   }
 }
 
+interface CoursesCourseIdRouteChildren {
+  CoursesCourseIdAssignmentsRoute: typeof CoursesCourseIdAssignmentsRoute
+  CoursesCourseIdCourseInfoRoute: typeof CoursesCourseIdCourseInfoRoute
+}
+
+const CoursesCourseIdRouteChildren: CoursesCourseIdRouteChildren = {
+  CoursesCourseIdAssignmentsRoute: CoursesCourseIdAssignmentsRoute,
+  CoursesCourseIdCourseInfoRoute: CoursesCourseIdCourseInfoRoute,
+}
+
+const CoursesCourseIdRouteWithChildren = CoursesCourseIdRoute._addFileChildren(
+  CoursesCourseIdRouteChildren,
+)
+
+interface CoursesRouteChildren {
+  CoursesCourseIdRoute: typeof CoursesCourseIdRouteWithChildren
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesCourseIdRoute: CoursesCourseIdRouteWithChildren,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CoursesRoute: CoursesRouteWithChildren,
+  ProfileSettingsRoute: ProfileSettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
