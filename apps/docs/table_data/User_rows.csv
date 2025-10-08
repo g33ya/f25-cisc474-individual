@@ -1,0 +1,10 @@
+id,email,last_name,first_name,preferred_name,pronouns,profile_picture,created_at,updated_at
+1,alice@student.edu,Johnson,Alice,Ali,she/her,https://example.com/alice.jpg,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+2,bob@student.edu,Smith,Bob,,he/him,,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+3,dr.miller@uni.edu,Miller,Evelyn,Dr. Miller,she/her,https://example.com/miller.png,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+4,admin@uni.edu,Lee,Sam,,they/them,,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+5,carol@student.edu,Nguyen,Carol,,she/her,,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+6,dan@student.edu,Patel,Dan,,,https://example.com/dan.jpg,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+7,dr.taylor@uni.edu,Taylor,Marcus,Prof. Taylor,he/him,,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+8,emily@student.edu,Garcia,Emily,,she/her,,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918
+9,frank@student.edu,Kim,Frank,,he/him,https://example.com/frank.png,2025-09-24 23:03:14.918,2025-09-24 23:03:14.918

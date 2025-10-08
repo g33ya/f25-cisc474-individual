@@ -12,9 +12,168 @@ generator client {
   output   = "../generated/client"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
+// ---- Enums ---- //
+enum Role {
+  LEARNER
+  INSTRUCTOR
+  ADMINISTRATOR
 }
+
+enum SubmissionStatus {
+  SUBMITTED
+  LATE
+  NOT_SUBMITTED
+  GRADED
+}
+
+enum SubmissionType {
+  TEXT
+  FILE
+  URL
+}
+
+enum NotificationType {
+  COURSE_NOTIFICATION // e.g. course-wide announcements
+  USER_NOTIFICATION // e.g. assignment graded
+}
+
+// ---- Tables ---- //
+model User {
+  id              Int           @id @default(autoincrement())
+  email           String        @unique
+  last_name       String
+  first_name      String
+  preferred_name  String?
+  pronouns        String?
+  profile_picture String?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  @@index (email)
+
+  // Relations
+  enrollments     Enrollment[] 
+  courses         Course[]      @relation("CourseInstructor")
+  submissions     Submission[] 
+
+  grades_received Grade[]       @relation("GradesReceived") 
+  grades_given    Grade[]       @relation("GradesGiven") 
+
+  notifications   Notification[] @relation("NotificationsReceived")
+  created_notifs  Notification[] @relation("NotificationsCreated")
+}
+
+model Enrollment {
+  id         Int      @id @default(autoincrement())
+  role       Role
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
+
+  course_id  Int
+  course     Course   @relation(fields: [course_id], references: [id])
+}
+
+model Course {
+  id            Int          @id @default(autoincrement())
+  course_code   String       @db.VarChar(7) // Course codes like "CISC474"
+  course_title  String
+  description   String
+  start_date    DateTime
+  end_date      DateTime
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  // Relations
+  instructor_id Int
+  instructor    User       @relation("CourseInstructor", fields: [instructor_id], references: [id])
+  
+  enrollments   Enrollment[]
+  assignments   Assignment[]
+  notifications Notification[]
+}
+
+model Assignment {
+  id              Int       @id @default(autoincrement())
+  title           String
+  description     String
+  submission_type SubmissionType
+  points          Int
+  open_date       DateTime
+  due_date        DateTime
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  // Relations
+  course_id       Int
+  course          Course     @relation(fields: [course_id], references: [id])
+
+  submissions     Submission[]
+  grades          Grade[]
+}
+
+model Submission {
+  id              Int              @id @default(autoincrement())
+  submitted_at    DateTime?
+  submission_text String?
+  submission_file String?
+  submission_url  String?
+  status          SubmissionStatus
+  attempt_number  Int
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+
+  // Relations
+  assignment_id   Int
+  assignment      Assignment @relation(fields: [assignment_id], references: [id])
+
+  user_id         Int
+  user            User       @relation(fields: [user_id], references: [id])
+
+  grades          Grade[]
+}
+
+model Grade {
+  id            Int      @id @default(autoincrement())
+  grade_value   Decimal
+  feedback      String?
+  graded_at     DateTime
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  student_id    Int
+  student       User       @relation("GradesReceived", fields: [student_id], references: [id])
+  
+  assignment_id Int
+  assignment    Assignment @relation(fields: [assignment_id], references: [id])
+  
+  submission_id Int
+  submission    Submission @relation(fields: [submission_id], references: [id])
+  
+  grader_id     Int
+  grader        User       @relation("GradesGiven", fields: [grader_id], references: [id])
+}
+
+model Notification {
+  id         Int              @id @default(autoincrement())
+  type       NotificationType
+  title      String
+  content    String
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+
+  // Relations
+  course_id     Int?
+  course        Course?          @relation(fields: [course_id], references: [id])
+  
+  user_id       Int?
+  user          User?            @relation("NotificationsReceived", fields: [user_id], references: [id])
+  
+  created_by_id Int
+  created_by    User             @relation("NotificationsCreated", fields: [created_by_id], references: [id])
+}
+

@@ -16,7 +16,7 @@
   font-synthesis: none;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   .page {
     --gray-rgb: 255, 255, 255;
     --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
@@ -185,4 +185,81 @@ button.secondary {
   .logo {
     filter: invert();
   }
+}
+
+.title {
+  align-items: left;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-synthesis: none;
+}
+
+
+.main {
+  background-color: #111;
+  color: white;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* ChatGPT was used as assistance for generating the below CSS */
+
+.navbar {
+  display: flex;
+  border-bottom: 2px solid #c94f7c; 
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: #f8d7e0; 
+  color: #7a0044;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  background: #f1b9cb;
+}
+
+.nav-link.active {
+  background: #cd6b8a;
+  color: white;
+  font-weight: bold;
+}
+
+.navbar-divider {
+  border: none;
+  height: 2px;
+  background: #bbb;
+  margin: 0 0 1.5rem 0;
+}
+
+.coursenavbar {
+  display: flex;
+  border-bottom: 2px solid #bbb;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.course-nav-link {
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  color: #969595;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+}
+
+.course-nav-link.active {
+  color: #7a0044;
+  font-weight: bold;
+  text-decoration: underline;
 }
