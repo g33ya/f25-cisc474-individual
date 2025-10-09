@@ -17,12 +17,12 @@ const config = defineConfig({
     // this must go last to ensure that SSR functions are found
     viteReact(),
   ],
-  server: {
+  server: { // enable hot-reloading in WSL
     watch: {
-      usePolling: true, // 👈 enables polling
-      interval: 100,    // check every 100ms
+      usePolling: true, 
+      interval: 100,    
     },
-    host: true,          // make accessible from Windows browser
+    host: true,          
   },
 });
 
