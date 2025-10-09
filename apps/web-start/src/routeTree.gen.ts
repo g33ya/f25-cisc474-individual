@@ -10,9 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileSettingsRouteImport } from './routes/profile-settings'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesCourseIdRouteImport } from './routes/courses.$courseId'
+import { Route as CoursesCourseIdIndexRouteImport } from './routes/courses.$courseId.index'
 import { Route as CoursesCourseIdCourseInfoRouteImport } from './routes/courses.$courseId.course-info'
 import { Route as CoursesCourseIdAssignmentsRouteImport } from './routes/courses.$courseId.assignments'
 
@@ -21,9 +25,19 @@ const ProfileSettingsRoute = ProfileSettingsRouteImport.update({
   path: '/profile-settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoursesRoute = CoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssignmentsRoute = AssignmentsRouteImport.update({
+  id: '/assignments',
+  path: '/assignments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,10 +45,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoursesRoute,
+} as any)
 const CoursesCourseIdRoute = CoursesCourseIdRouteImport.update({
   id: '/$courseId',
   path: '/$courseId',
   getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesCourseIdIndexRoute = CoursesCourseIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoursesCourseIdRoute,
 } as any)
 const CoursesCourseIdCourseInfoRoute =
   CoursesCourseIdCourseInfoRouteImport.update({
@@ -51,59 +75,81 @@ const CoursesCourseIdAssignmentsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses/': typeof CoursesIndexRoute
   '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
   '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
+  '/courses/$courseId/': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/courses': typeof CoursesRouteWithChildren
+  '/assignments': typeof AssignmentsRoute
+  '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
-  '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses': typeof CoursesIndexRoute
   '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
   '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
+  '/courses/$courseId': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
+  '/courses/': typeof CoursesIndexRoute
   '/courses/$courseId/assignments': typeof CoursesCourseIdAssignmentsRoute
   '/courses/$courseId/course-info': typeof CoursesCourseIdCourseInfoRoute
+  '/courses/$courseId/': typeof CoursesCourseIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/assignments'
     | '/courses'
+    | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
+    | '/courses/'
     | '/courses/$courseId/assignments'
     | '/courses/$courseId/course-info'
+    | '/courses/$courseId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/courses'
+    | '/assignments'
+    | '/notifications'
     | '/profile-settings'
-    | '/courses/$courseId'
+    | '/courses'
     | '/courses/$courseId/assignments'
     | '/courses/$courseId/course-info'
+    | '/courses/$courseId'
   id:
     | '__root__'
     | '/'
+    | '/assignments'
     | '/courses'
+    | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
+    | '/courses/'
     | '/courses/$courseId/assignments'
     | '/courses/$courseId/course-info'
+    | '/courses/$courseId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AssignmentsRoute: typeof AssignmentsRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  NotificationsRoute: typeof NotificationsRoute
   ProfileSettingsRoute: typeof ProfileSettingsRoute
 }
 
@@ -116,11 +162,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/courses': {
       id: '/courses'
       path: '/courses'
       fullPath: '/courses'
       preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assignments': {
+      id: '/assignments'
+      path: '/assignments'
+      fullPath: '/assignments'
+      preLoaderRoute: typeof AssignmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -130,12 +190,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/': {
+      id: '/courses/'
+      path: '/'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof CoursesRoute
+    }
     '/courses/$courseId': {
       id: '/courses/$courseId'
       path: '/$courseId'
       fullPath: '/courses/$courseId'
       preLoaderRoute: typeof CoursesCourseIdRouteImport
       parentRoute: typeof CoursesRoute
+    }
+    '/courses/$courseId/': {
+      id: '/courses/$courseId/'
+      path: '/'
+      fullPath: '/courses/$courseId/'
+      preLoaderRoute: typeof CoursesCourseIdIndexRouteImport
+      parentRoute: typeof CoursesCourseIdRoute
     }
     '/courses/$courseId/course-info': {
       id: '/courses/$courseId/course-info'
@@ -157,11 +231,13 @@ declare module '@tanstack/react-router' {
 interface CoursesCourseIdRouteChildren {
   CoursesCourseIdAssignmentsRoute: typeof CoursesCourseIdAssignmentsRoute
   CoursesCourseIdCourseInfoRoute: typeof CoursesCourseIdCourseInfoRoute
+  CoursesCourseIdIndexRoute: typeof CoursesCourseIdIndexRoute
 }
 
 const CoursesCourseIdRouteChildren: CoursesCourseIdRouteChildren = {
   CoursesCourseIdAssignmentsRoute: CoursesCourseIdAssignmentsRoute,
   CoursesCourseIdCourseInfoRoute: CoursesCourseIdCourseInfoRoute,
+  CoursesCourseIdIndexRoute: CoursesCourseIdIndexRoute,
 }
 
 const CoursesCourseIdRouteWithChildren = CoursesCourseIdRoute._addFileChildren(
@@ -170,10 +246,12 @@ const CoursesCourseIdRouteWithChildren = CoursesCourseIdRoute._addFileChildren(
 
 interface CoursesRouteChildren {
   CoursesCourseIdRoute: typeof CoursesCourseIdRouteWithChildren
+  CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
   CoursesCourseIdRoute: CoursesCourseIdRouteWithChildren,
+  CoursesIndexRoute: CoursesIndexRoute,
 }
 
 const CoursesRouteWithChildren =
@@ -181,7 +259,9 @@ const CoursesRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AssignmentsRoute: AssignmentsRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  NotificationsRoute: NotificationsRoute,
   ProfileSettingsRoute: ProfileSettingsRoute,
 }
 export const routeTree = rootRouteImport

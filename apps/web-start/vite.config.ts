@@ -17,6 +17,13 @@ const config = defineConfig({
     // this must go last to ensure that SSR functions are found
     viteReact(),
   ],
+  server: {
+    watch: {
+      usePolling: true, // 👈 enables polling
+      interval: 100,    // check every 100ms
+    },
+    host: true,          // make accessible from Windows browser
+  },
 });
 
 export default config;

@@ -11,6 +11,8 @@ import { TanStackDevtools } from '@tanstack/react-devtools';
 import TanStackQueryDevtools from '../integrations/devtools';
 import appCss from '../styles.css?url';
 import type { QueryClient } from '@tanstack/react-query';
+import SiteNavbar from '../components/SiteNavbar';
+import styles from '../styles/courses.module.css';
 
 export interface MyRouterContext {
   queryClient: QueryClient;
@@ -30,12 +32,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         title: 'TanStack Start Starter',
       },
     ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
   }),
 
   shellComponent: RootDocument,
@@ -48,6 +44,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <SiteNavbar />
         {children}
         <TanStackDevtools
           config={{
