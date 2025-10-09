@@ -1,5 +1,5 @@
 import { Button } from "@repo/ui/button";
-import styles from "./styles/profile-settings.module.css";
+import styles from "../styles/profile-settings.module.css";
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/profile-settings')({
