@@ -1,0 +1,61 @@
+/* ChatGPT was used as assistance for generating the below CSS */
+
+.main {
+    width: 95%;
+    margin: 0 auto; 
+}
+
+.header {
+  color: #7a0e55;
+  font-size: 2rem;
+  margin-bottom: .5rem;
+}
+
+.group {
+  margin-bottom: 1.5rem;
+}
+
+.date {
+  color: #555;
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.assignment {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.courseHeader {
+  background-color: #b83b78;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.assignmentBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background-color: #fdf6f9;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checkboxRow input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.due {
+  color: #555;
+  font-size: 0.85rem;
+}
