@@ -17,6 +17,14 @@ const config = defineConfig({
     // this must go last to ensure that SSR functions are found
     viteReact(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // Ensures the Cloudflare worker bundle always has a consistent filename
+        entryFileNames: 'worker-entry.js',
+      },
+    },
+  },
   server: { // enable hot-reloading in WSL
     watch: {
       usePolling: true, 
