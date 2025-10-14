@@ -10,10 +10,10 @@ interface NavLink {
 
 export default function SiteNavbar() {
   const links: NavLink[] = [
-    { to: "/", label: "Courses" },
+    { to: "/", label: "Courses (Contains Backend Data)" },
     { to: "/assignments", label: "Assignments" },
     { to: "/notifications", label: "Notifications" },
-    { to: "/profile-settings", label: "Profile Settings" },
+    { to: "/profile-settings", label: "Profile Settings (Contains Backend Data)" },
   ]
 
   return (
