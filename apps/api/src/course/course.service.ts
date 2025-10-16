@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../prismaService/prismaService.service'; // uhhh need to fix this somehow lol
+import { CourseCreateIn, CourseUpdateIn, CourseOut } from '@repo/api/courses';
 
 @Injectable()
 export class CourseService {
@@ -19,4 +20,34 @@ export class CourseService {
         }
         return course;
     }
+
+        async create(createCourseDto: CourseCreateIn): Promise<CourseOut> {
+    const newCourse = await this.prismaService.course.create({
+      data: createCourseDto,
+    });
+    return {
+      code: newCourse.code,
+      title: newCourse.title,
+      description: newCourse.description,
+      instructorId: newCourse.instructorId,
+      id: newCourse.id,
+      startDate: newCourse.startDate.toString(),
+      endDate: newCourse.endDate.toString(),
+      createdAt: newCourse.createdAt.toString(),
+      updatedAt: newCourse.updatedAt.toString(),
+    };
+  }
+
+  update(id: number, updateCourseDto: CourseUpdateIn) {
+    return this.prismaService.course.update({
+      where: { id },
+      data: updateCourseDto,
+    });
+  }
+
+  remove(id: number) {
+    return this.prismaService.course.delete({
+      where: { id },
+    });
+  }
 }
