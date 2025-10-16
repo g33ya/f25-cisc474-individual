@@ -21,7 +21,7 @@ export class CourseService {
         return course;
     }
 
-        async create(createCourseDto: CourseCreateIn): Promise<CourseOut> {
+    async create(createCourseDto: CourseCreateIn): Promise<CourseOut> {
     const newCourse = await this.prismaService.course.create({
       data: createCourseDto,
     });
