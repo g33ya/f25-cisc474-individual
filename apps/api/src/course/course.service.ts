@@ -26,15 +26,15 @@ export class CourseService {
       data: createCourseDto,
     });
     return {
-      code: newCourse.code,
-      title: newCourse.title,
+      course_code: newCourse.course_code,
+      course_title: newCourse.course_title,
       description: newCourse.description,
-      instructorId: newCourse.instructorId,
+      instructor_id: newCourse.instructor_id,
       id: newCourse.id,
-      startDate: newCourse.startDate.toString(),
-      endDate: newCourse.endDate.toString(),
-      createdAt: newCourse.createdAt.toString(),
-      updatedAt: newCourse.updatedAt.toString(),
+      start_date: newCourse.start_date.toString(),
+      end_date: newCourse.end_date.toString(),
+      created_at: newCourse.created_at.toString(),
+      updated_at: newCourse.updated_at.toString(),
     };
   }
 

@@ -13,36 +13,36 @@ export type CourseRef = z.infer<typeof CourseRef>;
 // Output DTOs (API responses)
 export const CourseOut = z.object({
   id: z.int(),
-  code: z.string(),
-  title: z.string(),
+  course_code: z.string(),
+  course_title: z.string(),
   description: z.string(),
-  startDate: z.iso.datetime(),
-  endDate: z.iso.datetime(),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime(),
-  instructorId: z.int(),
+  start_date: z.iso.datetime(),
+  end_date: z.iso.datetime(),
+  created_at: z.iso.datetime(),
+  updated_at: z.iso.datetime(),
+  instructor_id: z.int(),
 });
 export type CourseOut = z.infer<typeof CourseOut>;
 
 // Creation DTOs (API request bodies)
 export const CourseCreateIn = z.object({
-    code: z.string().min(1),
-    title: z.string().min(1),
+    course_code: z.string().min(1),
+    course_title: z.string().min(1),
     description: z.string(),
-    instructorId: z.int(),
-    startDate: z.string(), // may update the schema itself to make it a nullable field / optional
-    endDate: z.string(),
+    instructor_id: z.int(),
+    start_date: z.string(), // may update the schema itself to make it a nullable field / optional
+    end_date: z.string(),
 });
 export type CourseCreateIn = z.infer<typeof CourseCreateIn>;
 
 // Update DTOs (API request bodies)
 export const CourseUpdateIn = z.object({
-  code: z.string().min(1).optional(),
-  title: z.string().min(1).optional(),
+  course_code: z.string().min(1).optional(),
+  course_title: z.string().min(1).optional(),
   description: z.string().optional(),
-  instructorId: z.int().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
+  instructor_id: z.int().optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
 });
 export type CourseUpdateIn = z.infer<typeof CourseUpdateIn>;
 
