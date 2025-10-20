@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileSettingsRouteImport } from './routes/profile-settings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as CreateRouteImport } from './routes/create'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as IndexRouteImport } from './routes/index'
@@ -28,6 +29,11 @@ const ProfileSettingsRoute = ProfileSettingsRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateRoute = CreateRouteImport.update({
+  id: '/create',
+  path: '/create',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/create': typeof CreateRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
+  '/create': typeof CreateRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses': typeof CoursesIndexRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/create': typeof CreateRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assignments'
     | '/courses'
+    | '/create'
     | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/assignments'
+    | '/create'
     | '/notifications'
     | '/profile-settings'
     | '/courses'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assignments'
     | '/courses'
+    | '/create'
     | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssignmentsRoute: typeof AssignmentsRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  CreateRoute: typeof CreateRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileSettingsRoute: typeof ProfileSettingsRoute
 }
@@ -167,6 +180,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create': {
+      id: '/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof CreateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssignmentsRoute: AssignmentsRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  CreateRoute: CreateRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileSettingsRoute: ProfileSettingsRoute,
 }
