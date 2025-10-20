@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prismaService/prismaService.service'; // uhhh need to fix this somehow lol
+import { PrismaService } from '../prisma/prisma.service'; 
 import { CourseCreateIn, CourseUpdateIn, CourseOut } from '@repo/api/courses';
 
 @Injectable()

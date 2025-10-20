@@ -1,7 +1,7 @@
-import { Controller, Get, Param, ParseIntPipe, Patch, Body, Post, Delete} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Patch, Body, Post, Delete, UsePipes} from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CourseRef, CourseUpdateIn, CourseCreateIn } from '@repo/api/courses';
-import { ZodPipe } from 'src/zod_pipe'; // gotta find this
+import { ZodPipe } from 'src/zod_pipe';
 
 @Controller('courses')
 export class CourseController {
@@ -23,6 +23,7 @@ export class CourseController {
     }
 
     @Post()
+    @UsePipes(new ZodPipe(CourseCreateIn))
     create(@Body() createCourseDto: CourseCreateIn) {
         return this.courseService.create(createCourseDto);
     }
