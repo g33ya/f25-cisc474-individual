@@ -12,8 +12,6 @@ async function bootstrap() {
     ? process.env.FRONTEND_URL.split(',').map((origin) => origin.trim())
     : ['http://localhost:3001', 'http://localhost:3002'];
 
-      console.log('CORS origins:', origins); // ✅ Add this to confirm at runtime
-
   app.enableCors({
     origin: origins,
     credentials: true,
