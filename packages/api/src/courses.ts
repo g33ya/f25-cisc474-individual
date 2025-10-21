@@ -30,7 +30,7 @@ export const CourseCreateIn = z.object({
     course_title: z.string().min(1),
     description: z.string(),
     instructor_id: z.int(),
-    start_date: z.string(), // may update the schema itself to make it a nullable field / optional
+    start_date: z.string(), 
     end_date: z.string(),
 });
 export type CourseCreateIn = z.infer<typeof CourseCreateIn>;

@@ -1,31 +1,63 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createServerFn } from "@tanstack/react-start";
 import { mutateBackend } from '../integrations/fetcher';
 import { CourseCreateIn, CourseUpdateIn, CourseOut } from '@repo/api/courses';
 import { useState } from 'react';
+import { backendFetcher } from "../integrations/fetcher";
+import { Suspense } from "react";
 
-export const Route = createFileRoute('/create')({
+
+type Course = { // Matches database table columns
+  id: number;
+  course_code: string;
+  course_title: string;
+  description?: string;
+  start_date?: string;
+  end_date?: string;
+};
+
+const loaderFn = createServerFn().handler(async () => { // Loader to fetch data from backend
+  const fetchCourses = backendFetcher<Course[]>("/courses");
+  const data = await fetchCourses();
+  return data;
+});
+
+export const Route = createFileRoute('/manage-courses')({
+  loader: async () => {
+    const data = await loaderFn();
+    return { data };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { data } = Route.useLoaderData() as { data: Course[] };
+
+  const [newCourseCode, setNewCourseCode] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [newInstructorId, setNewInstructorId] = useState(1);
+  const [newInstructorId, setNewInstructorId] = useState<number>();
 
   const [updateId, setUpdateId] = useState<number | ''>('');
+  const [updateCourseCode, setUpdateCourseCode] = useState('');
   const [updateTitle, setUpdateTitle] = useState('');
   const [updateDescription, setUpdateDescription] = useState('');
+  const [updateInstructorId, setUpdateInstructorId] = useState<number >();
 
   const [deleteId, setDeleteId] = useState<number | ''>('');
 
   const queryClient = useQueryClient();
+
+
+  // Create, Update, Delete mutations
 
   const createMutation = useMutation({
     mutationFn: (newCourse: CourseCreateIn) =>
       mutateBackend<CourseCreateIn, CourseOut>('/courses', 'POST', newCourse),
     onSuccess: (data: CourseOut) => {
       queryClient.setQueryData(['courses', data.id], data);
+      setNewCourseCode('');
       setNewTitle('');
       setNewDescription('');
       setNewInstructorId(1);
@@ -39,11 +71,13 @@ function RouteComponent() {
         'PATCH',
         patch,
       ),
-    onSuccess: (data: CourseOut) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       setUpdateId('');
+      setUpdateCourseCode('');
       setUpdateTitle('');
       setUpdateDescription('');
+      setUpdateInstructorId(undefined);
     },
   });
 
@@ -64,6 +98,7 @@ function RouteComponent() {
       <header>
         <h1>Manage Courses</h1>
       </header>
+      <p>Use the forms below to create, update, or delete courses. Ensure you fill out all fields not denoted optional. A Course Data JSON is displayed underneath the forms-- <strong>in order to see your changes reflected in the data, refresh the page</strong>.</p>
 
       <section style={{ marginBottom: '2rem' }}>
         <h2>Create a New Course</h2>
@@ -82,7 +117,15 @@ function RouteComponent() {
         <div>
           <input
             type="text"
-            placeholder="Course Title"
+            placeholder="Course Code (e.g. CISC361)"
+            value={newCourseCode}
+            onChange={(e) => setNewCourseCode(e.target.value)}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Course Title (e.g. Operating Systems)"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
           />
@@ -103,14 +146,15 @@ function RouteComponent() {
             onChange={(e) => setNewInstructorId(Number(e.target.value))}
           />
         </div>
+        
         <div>
           <button
             onClick={() => {
               createMutation.mutate({
-                course_code: 'CISC123',
+                course_code: newCourseCode,
                 course_title: newTitle,
                 description: newDescription,
-                instructor_id: newInstructorId,
+                instructor_id: newInstructorId ?? 1,
                 start_date: new Date().toISOString(),
                 end_date: new Date(
                   new Date().setMonth(new Date().getMonth() + 1),
@@ -122,6 +166,14 @@ function RouteComponent() {
             {createMutation.isPending ? 'Creating...' : 'Create Course'}
           </button>
         </div>
+
+        <div>
+          <ul>
+            <li><strong>Note:</strong> The <em>course_code</em> can be max. 7 characters long.</li>
+            <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor <em>(e.g. 1, 3, 7)</em>.</li>
+          </ul>
+        </div>
+
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
@@ -151,6 +203,14 @@ function RouteComponent() {
         <div>
           <input
             type="text"
+            placeholder="New Course Code (optional)"
+            value={updateCourseCode}
+            onChange={(e) => setUpdateCourseCode(e.target.value)}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
             placeholder="New Title (optional)"
             value={updateTitle}
             onChange={(e) => setUpdateTitle(e.target.value)}
@@ -165,13 +225,23 @@ function RouteComponent() {
           />
         </div>
         <div>
+          <input
+            type="text"
+            placeholder="New Instructor ID (optional)"
+            value={updateInstructorId}
+            onChange={(e) => setUpdateInstructorId(Number(e.target.value))}
+          />
+        </div>
+        <div>
           <button
             onClick={() => {
               if (!updateId) return;
               updateMutation.mutate({
-                id: Number(updateId), 
+                id: Number(updateId),
+                course_code: updateCourseCode || undefined,
                 course_title: updateTitle || undefined,
                 description: updateDescription || undefined,
+                instructor_id: updateInstructorId || undefined,
               });
             }}
             disabled={updateMutation.isPending}
@@ -179,6 +249,14 @@ function RouteComponent() {
             {updateMutation.isPending ? 'Updating...' : 'Update Course'}
           </button>
         </div>
+
+        <div>
+          <ul>
+            <li><strong>Note:</strong> The <em>course_code</em> can be max. 7 characters long.</li>
+            <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor <em>(e.g. 1, 3, 7)</em>.</li>
+          </ul>
+        </div>
+
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
@@ -217,9 +295,18 @@ function RouteComponent() {
       </section>
 
       <hr />
+
       <div>
         <a href="/courses">Back to Courses</a>
       </div>
+      
+      <Suspense fallback={<div>Loading course data...</div>}>
+        <div style={{ marginTop: "2rem" }}>
+          <h2>Course Data Fetch</h2>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      </Suspense>
+
     </div>
   );
 }

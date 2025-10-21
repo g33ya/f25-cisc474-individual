@@ -11,7 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileSettingsRouteImport } from './routes/profile-settings'
 import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as CreateRouteImport } from './routes/create'
+import { Route as ManageCoursesRouteImport } from './routes/manage-courses'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
 import { Route as IndexRouteImport } from './routes/index'
@@ -31,9 +31,9 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CreateRoute = CreateRouteImport.update({
-  id: '/create',
-  path: '/create',
+const ManageCoursesRoute = ManageCoursesRouteImport.update({
+  id: '/manage-courses',
+  path: '/manage-courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -83,7 +83,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
-  '/create': typeof CreateRoute
+  '/manage-courses': typeof ManageCoursesRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
@@ -95,7 +95,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
-  '/create': typeof CreateRoute
+  '/manage-courses': typeof ManageCoursesRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses': typeof CoursesIndexRoute
@@ -108,7 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/assignments': typeof AssignmentsRoute
   '/courses': typeof CoursesRouteWithChildren
-  '/create': typeof CreateRoute
+  '/manage-courses': typeof ManageCoursesRoute
   '/notifications': typeof NotificationsRoute
   '/profile-settings': typeof ProfileSettingsRoute
   '/courses/$courseId': typeof CoursesCourseIdRouteWithChildren
@@ -123,7 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assignments'
     | '/courses'
-    | '/create'
+    | '/manage-courses'
     | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
@@ -135,7 +135,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/assignments'
-    | '/create'
+    | '/manage-courses'
     | '/notifications'
     | '/profile-settings'
     | '/courses'
@@ -147,7 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assignments'
     | '/courses'
-    | '/create'
+    | '/manage-courses'
     | '/notifications'
     | '/profile-settings'
     | '/courses/$courseId'
@@ -161,7 +161,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssignmentsRoute: typeof AssignmentsRoute
   CoursesRoute: typeof CoursesRouteWithChildren
-  CreateRoute: typeof CreateRoute
+  ManageCoursesRoute: typeof ManageCoursesRoute
   NotificationsRoute: typeof NotificationsRoute
   ProfileSettingsRoute: typeof ProfileSettingsRoute
 }
@@ -182,11 +182,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/create': {
-      id: '/create'
-      path: '/create'
-      fullPath: '/create'
-      preLoaderRoute: typeof CreateRouteImport
+    '/manage-courses': {
+      id: '/manage-courses'
+      path: '/manage-courses'
+      fullPath: '/manage-courses'
+      preLoaderRoute: typeof ManageCoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -281,7 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssignmentsRoute: AssignmentsRoute,
   CoursesRoute: CoursesRouteWithChildren,
-  CreateRoute: CreateRoute,
+  ManageCoursesRoute: ManageCoursesRoute,
   NotificationsRoute: NotificationsRoute,
   ProfileSettingsRoute: ProfileSettingsRoute,
 }
