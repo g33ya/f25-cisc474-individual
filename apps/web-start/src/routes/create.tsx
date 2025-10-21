@@ -9,22 +9,18 @@ export const Route = createFileRoute('/create')({
 });
 
 function RouteComponent() {
-  /* ---------- CREATE STATES ---------- */
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [newInstructorId, setNewInstructorId] = useState(1);
 
-  /* ---------- UPDATE STATES ---------- */
   const [updateId, setUpdateId] = useState<number | ''>('');
   const [updateTitle, setUpdateTitle] = useState('');
   const [updateDescription, setUpdateDescription] = useState('');
 
-  /* ---------- DELETE STATES ---------- */
   const [deleteId, setDeleteId] = useState<number | ''>('');
 
   const queryClient = useQueryClient();
 
-  /* ---------- CREATE MUTATION ---------- */
   const createMutation = useMutation({
     mutationFn: (newCourse: CourseCreateIn) =>
       mutateBackend<CourseCreateIn, CourseOut>('/courses', 'POST', newCourse),
@@ -36,43 +32,39 @@ function RouteComponent() {
     },
   });
 
-  /* ---------- UPDATE MUTATION ---------- */
   const updateMutation = useMutation({
     mutationFn: ({ id, ...patch }: { id: number } & CourseUpdateIn) =>
       mutateBackend<CourseUpdateIn, CourseOut>(
-        `/courses/${Number(id)}`, // ✅ force numeric ID in URL
+        `/courses/${Number(id)}`, 
         'PATCH',
         patch,
       ),
     onSuccess: (data: CourseOut) => {
-      queryClient.invalidateQueries(['courses']);
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
       setUpdateId('');
       setUpdateTitle('');
       setUpdateDescription('');
     },
   });
 
-  /* ---------- DELETE MUTATION ---------- */
   const deleteMutation = useMutation({
     mutationFn: (id: number) =>
       mutateBackend<undefined, { message: string }>(
-        `/courses/${Number(id)}`, // ✅ force numeric ID in URL
+        `/courses/${Number(id)}`, 
         'DELETE',
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries(['courses']);
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
       setDeleteId('');
     },
   });
 
-  /* ---------- UI ---------- */
   return (
     <div style={{ padding: '2rem' }}>
       <header>
         <h1>Manage Courses</h1>
       </header>
 
-      {/* CREATE SECTION */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Create a New Course</h2>
 
@@ -132,7 +124,6 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* UPDATE SECTION */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Update an Existing Course</h2>
 
@@ -178,7 +169,7 @@ function RouteComponent() {
             onClick={() => {
               if (!updateId) return;
               updateMutation.mutate({
-                id: Number(updateId), // ✅ force number before sending
+                id: Number(updateId), 
                 course_title: updateTitle || undefined,
                 description: updateDescription || undefined,
               });
@@ -190,7 +181,6 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* DELETE SECTION */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Delete a Course</h2>
 
@@ -217,7 +207,7 @@ function RouteComponent() {
           <button
             onClick={() => {
               if (!deleteId) return;
-              deleteMutation.mutate(Number(deleteId)); // ✅ always number
+              deleteMutation.mutate(Number(deleteId));
             }}
             disabled={deleteMutation.isPending}
           >
