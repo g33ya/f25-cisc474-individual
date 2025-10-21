@@ -18,9 +18,10 @@ export class CourseController {
     }
 
     @Patch(':id')
-    update(@Param('id') id: number, @Body() updateCourseDto: CourseUpdateIn) {
+    update(@Param('id', ParseIntPipe) id: number, @Body() updateCourseDto: CourseUpdateIn) {
         return this.courseService.update(id, updateCourseDto);
     }
+
 
     @Post()
     @UsePipes(new ZodPipe(CourseCreateIn))
@@ -29,7 +30,8 @@ export class CourseController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id: number) {
+    remove(@Param('id', ParseIntPipe) id: number) {
         return this.courseService.remove(id);
     }
+
 }
