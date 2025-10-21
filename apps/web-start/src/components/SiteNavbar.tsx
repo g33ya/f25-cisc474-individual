@@ -14,7 +14,7 @@ export default function SiteNavbar() {
     { to: "/assignments", label: "Assignments" },
     { to: "/notifications", label: "Notifications" },
     { to: "/profile-settings", label: "Profile Settings (Contains Backend Data)" },
-    { to: "/create", label: "Create Course" },
+    { to: "/manage-courses", label: "Manage Courses" },
   ]
 
   return (
