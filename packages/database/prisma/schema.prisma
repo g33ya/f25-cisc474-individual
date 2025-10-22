@@ -61,6 +61,8 @@ model User {
 
   notifications   Notification[] @relation("NotificationsReceived")
   created_notifs  Notification[] @relation("NotificationsCreated")
+
+  authentications Authentication[]
 }
 
 model Enrollment {
@@ -177,3 +179,10 @@ model Notification {
   created_by    User             @relation("NotificationsCreated", fields: [created_by_id], references: [id])
 }
 
+model Authentication {
+  id         Int              @id @default(autoincrement())
+  provider   String
+  providerId String
+  userId     Int
+  user       User   @relation(fields: [userId], references: [id])
+}
