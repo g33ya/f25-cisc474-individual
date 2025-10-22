@@ -12,9 +12,10 @@ import { EnrollmentModule } from './enrollment/enrollment.module';
 import { GradeModule } from './grade/grade.module';
 import { NotificationModule } from './notification/notification.module';
 import { SubmissionModule } from './submission/submission.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule, CourseModule, EnrollmentModule, GradeModule, NotificationModule, SubmissionModule],
+  imports: [LinksModule, UsersModule, PrismaModule, AssignmentModule, CourseModule, EnrollmentModule, GradeModule, NotificationModule, SubmissionModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
