@@ -186,6 +186,6 @@ model Authentication {
   userId      Int
   user        User   @relation(fields: [userId], references: [id])
 
-  @@index([provider, providerId]) // For quick lookup of auth records
+  @@unique([provider, providerId]) // For quick lookup of auth records!
 }
 
