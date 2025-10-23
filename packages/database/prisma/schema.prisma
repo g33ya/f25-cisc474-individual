@@ -180,9 +180,12 @@ model Notification {
 }
 
 model Authentication {
-  id         Int              @id @default(autoincrement())
-  provider   String
-  providerId String
-  userId     Int
-  user       User   @relation(fields: [userId], references: [id])
+  id          Int    @id @default(autoincrement())
+  provider    String
+  providerId  String
+  userId      Int
+  user        User   @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerId]) // ✅ composite key so findUnique works
 }
+
