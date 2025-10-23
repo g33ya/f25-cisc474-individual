@@ -1,10 +1,11 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useApiQuery } from "../integrations/api";
+import { LoginButton } from "../components/LoginButton";
+import { LogoutButton } from "../components/LogoutButton";
 import styles from "../styles/courses.module.css";
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { backendFetcher } from "../integrations/fetcher";
 
-type Course = { // Matches database table columns
+type Course = {
   id: number;
   course_code: string;
   course_title: string;
@@ -13,72 +14,70 @@ type Course = { // Matches database table columns
   end_date?: string;
 };
 
-const mockCourses = [ // Will need to map backend data rather than using mock courses
-  {
-    id: 1,
-    code: "CISC474",
-    name: "Advanced Web Technologies",
-    announcement: "Welcome to the first week of…",
-    meetsIn: "2 hours",
-  },
-  {
-    id: 2,
-    code: "CISC361",
-    name: "Operating Systems",
-    announcement: "No recent announcements",
-    meetsIn: "1 day",
-  },
-];
-
-const loaderFn = createServerFn().handler(async () => { // Loader to fetch data from backend
-  const fetchCourses = backendFetcher<Course[]>("/courses");
-  const data = await fetchCourses();
-  return data;
-});
-
 export const Route = createFileRoute("/courses/")({
-  loader: async () => {
-    const data = await loaderFn();
-    return { data };
-  },
   component: CoursesTab,
 });
 
 function CoursesTab() {
-  const { data } = Route.useLoaderData() as { data: Course[] };
+  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+
+  const { data, showLoading, error } = useApiQuery<Course[]>(["courses"], "/courses");
+
+  if (isLoading) {
+    return <div className={styles.main}>Checking authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    loginWithRedirect({
+      appState: { returnTo: "/courses" },
+    });
+    return (
+      <div className={styles.main}>
+        <h2>Redirecting to login...</h2>
+        <LoginButton />
+      </div>
+    );
+  }
+
+  if (showLoading) return <div className={styles.main}>Loading courses...</div>;
+  if (error) return <div className={styles.main}>Error: {error.message}</div>;
 
   return (
     <div className={styles.main}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+        <LogoutButton />
+      </div>
+
       <h2 className={styles.header}>Courses</h2>
       <hr />
 
       <div className={styles.grid}>
-        {mockCourses.map((course) => (
+        {data?.map((course) => (
           <Link
             key={course.id}
             to="/courses/$courseId"
-            params={{ courseId: course.code.toLowerCase() }}
+            params={{ courseId: course.course_code.toLowerCase() }}
             className={styles.card}
           >
             <div className={styles.cardHeader}>
               <strong>
-                {course.code}: {course.name}
+                {course.course_code}: {course.course_title}
               </strong>
             </div>
             <div className={styles.cardBody}>
-              <p className={styles.announcement}>📢 {course.announcement}</p>
-              <p className={styles.meets}>Meets in: {course.meetsIn}</p>
+              <p className={styles.announcement}>
+                📢 {course.description || "No recent announcements"}
+              </p>
+              <p className={styles.meets}>
+                Starts:{" "}
+                {course.start_date
+                  ? new Date(course.start_date).toLocaleDateString()
+                  : "TBA"}
+              </p>
             </div>
           </Link>
         ))}
       </div>
-
-      <Suspense fallback={<div>Loading course data...</div>}>
-        <div style={{ marginTop: "2rem" }}>
-          <h2>Course Data Fetch</h2>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      </Suspense>
     </div>
   );
 }

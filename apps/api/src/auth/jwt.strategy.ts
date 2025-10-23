@@ -3,15 +3,16 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 import * as dotenv from 'dotenv';
-import { PrismaService } from '../prisma/prisma.service'; 
+import { PrismaService } from '../prisma/prisma.service';
 
 dotenv.config();
 
 type JwtPayload = {
-  sub: string; // e.g. "auth0|abc123" or "google-oauth2|xyz"
+  sub: string;
   iss: string;
   aud: string | string[];
   scope?: string;
+  [key: string]: any; // using namespaced claims (such as email, given_name, family_name)
 };
 
 export interface JwtUser {
@@ -38,7 +39,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksRequestsPerMinute: 5,
         jwksUri: `${process.env.AUTH0_ISSUER_URL}.well-known/jwks.json`,
       }),
-
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       audience: process.env.AUTH0_AUDIENCE,
       issuer: `${process.env.AUTH0_ISSUER_URL}`,
@@ -47,40 +47,43 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<JwtUser> {
-    // You can see the JWT here
-    // console.log('JWT payload', payload);
-
-    const { sub } = payload;
+    const { sub, scope } = payload;
     const { provider, providerId } = splitSub(sub);
 
-    // 1) Find Authentication by provider+providerId
-    let auth = await this.prisma.authentication.findFirst({
-      where: { provider, providerId },
+    const ns = 'https://f25-cisc474-individual-9vy7.onrender.com/';
+
+    const email =
+      payload[`${ns}email`] || `${providerId}@${provider}.auth0`;
+    const firstName =
+      payload[`${ns}given_name`] || (payload.name?.split(' ')[0] ?? 'New');
+    const lastName =
+      payload[`${ns}family_name`] ||
+      (payload.name?.split(' ')[1] ?? 'User');
+
+    let auth = await this.prisma.authentication.findUnique({
+      where: {
+        provider_providerId: { provider, providerId },
+      },
       include: { user: true },
     });
 
-    // 2) If missing, create User + Authentication (using whatever claims we have)
+
+    // If missing, create the user and authentication record
     if (!auth) {
-      const user = await this.prisma.user.create({
-        data: {
-          email: 'default@example.com', // Need to replace
-          first_name: 'Default', // Need to replace
-          last_name: 'User', // Need to replace
+      const user = await this.prisma.user.upsert({
+        where: { email },
+        update: {},
+        create: {
+          email,
+          first_name: firstName,
+          last_name: lastName,
           authentications: {
-            create: {
-              provider,
-              providerId,
-            },
+            create: { provider, providerId },
           },
         },
       });
-      auth = { ...auth, user } as any;
-    } else {
-      // 3) Update user profile fields opportunistically (don’t overwrite with nulls)
-      await this.prisma.user.update({
-        where: { id: auth.userId },
-        data: {},
-      });
+
+      auth = { user, userId: user.id } as any;
     }
 
     return {
@@ -88,7 +91,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       provider,
       providerId,
       sub,
-      scopes: (payload.scope ?? '').split(' ').filter(Boolean),
-    } as JwtUser;
+      scopes: (scope ?? '').split(' ').filter(Boolean),
+    };
   }
 }
