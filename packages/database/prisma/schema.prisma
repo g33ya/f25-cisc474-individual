@@ -186,6 +186,6 @@ model Authentication {
   userId      Int
   user        User   @relation(fields: [userId], references: [id])
 
-  @@unique([provider, providerId]) // ✅ composite key so findUnique works
+  @@index([provider, providerId]) // For quick lookup of auth records
 }
 
