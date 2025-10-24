@@ -1,11 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createServerFn } from "@tanstack/react-start";
 import { mutateBackend } from '../integrations/fetcher';
 import { CourseCreateIn, CourseUpdateIn, CourseOut } from '@repo/api/courses';
 import { useState } from 'react';
-import { backendFetcher } from "../integrations/fetcher";
 import { Suspense } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useApiQuery } from "../integrations/api";
+import { LoginButton } from "../components/LoginButton";
+import { LogoutButton } from "../components/LogoutButton";
+import styles from "../styles/courses.module.css";
 
 
 type Course = { // Matches database table columns
@@ -17,22 +20,13 @@ type Course = { // Matches database table columns
   end_date?: string;
 };
 
-const loaderFn = createServerFn().handler(async () => { // Loader to fetch data from backend
-  const fetchCourses = backendFetcher<Course[]>("/courses");
-  const data = await fetchCourses();
-  return data;
-});
-
 export const Route = createFileRoute('/manage-courses')({
-  loader: async () => {
-    const data = await loaderFn();
-    return { data };
-  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { data } = Route.useLoaderData() as { data: Course[] };
+  const { data, showLoading, error } = useApiQuery<Course[]>(["courses"], "/courses");
+  
 
   const [newCourseCode, setNewCourseCode] = useState('');
   const [newTitle, setNewTitle] = useState('');
@@ -48,7 +42,6 @@ function RouteComponent() {
   const [deleteId, setDeleteId] = useState<number | ''>('');
 
   const queryClient = useQueryClient();
-
 
   // Create, Update, Delete mutations
 
@@ -93,8 +86,29 @@ function RouteComponent() {
     },
   });
 
+  const { isAuthenticated, isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <div className={styles.main}>Checking authentication...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.main}>
+        <h2>Please log in to continue</h2>
+        <LoginButton redirectTo="/manage-courses" />
+      </div>
+    );
+  }
+
+  if (showLoading) return <div className={styles.main}>Loading course management page...</div>;
+  if (error) return <div className={styles.main}>Error: {error.message}</div>;
+
   return (
     <div style={{ padding: '2rem' }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+        <LogoutButton />
+      </div>
       <header>
         <h1>Manage Courses</h1>
       </header>
