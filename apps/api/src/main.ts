@@ -2,16 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log'],
+  });
   const port = process.env.PORT || 3000;
   const host = process.env.HOST || undefined;
-
-  
   // Read allowed origins from environment variable
-  const origins = process.env.FRONTEND_URL
-    ? process.env.FRONTEND_URL.split(',').map((origin) => origin.trim())
-    : ['http://localhost:3001', 'http://localhost:3002', 'https://f25-cisc474-individual-9vy7.onrender.com'];
-
+  const origins = process.env.CLIENT_ORIGINS
+    ? process.env.CLIENT_ORIGINS.split(',').map((origin) => origin.trim())
+    : ['http://localhost:3001', 'http://localhost:3002', 'https://f25-cisc474-individual.gscozzaro2004.workers.dev'];
   app.enableCors({
     origin: origins,
     credentials: true,

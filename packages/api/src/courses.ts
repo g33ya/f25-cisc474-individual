@@ -46,6 +46,10 @@ export const CourseUpdateIn = z.object({
 });
 export type CourseUpdateIn = z.infer<typeof CourseUpdateIn>;
 
+export const CourseDelete = z.object({
+  id: z.int(),
+});
+export type CourseDelete = z.infer<typeof CourseDelete>;
 // Query DTOs (API query parameters)
 /*
 export const CoursesListFilter = Pagination.extend({
