@@ -1,6 +1,6 @@
 import { Controller, Get, Param, ParseIntPipe, Patch, Body, Post, Delete, UsePipes, UseGuards, Req} from '@nestjs/common';
 import { CourseService } from './course.service';
-import { CourseRef, CourseUpdateIn, CourseCreateIn } from '@repo/api/courses';
+import { CourseDelete, CourseUpdateIn, CourseCreateIn, CourseOut } from '@repo/api/courses';
 import { ZodPipe } from 'src/zod_pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -22,24 +22,22 @@ export class CourseController {
         return this.courseService.getCourseById(id);
     }
 
-    //@UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id: number, @Body() updateCourseDto: CourseUpdateIn) {
-        return this.courseService.update(id, updateCourseDto);
+    update(@Param('id') id: string, @Body() updateCourseDto: CourseUpdateIn) {
+        return this.courseService.update(Number(id), updateCourseDto);
     }
 
-    //@UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Post()
-    @UsePipes(new ZodPipe(CourseCreateIn))
-    create(@Body() createCourseDto: CourseCreateIn, @CurrentUser() user: JwtUser) {
-        createCourseDto.instructor_id = Number(user.userId);
+    //@UsePipes(new ZodPipe(CourseCreateIn))
+    create(@Body() createCourseDto: CourseCreateIn) {
         return this.courseService.create(createCourseDto);
     }
 
-    //@UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
-        return this.courseService.remove(id);
+    return this.courseService.remove(id);
     }
 
 }

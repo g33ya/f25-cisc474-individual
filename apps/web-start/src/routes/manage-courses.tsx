@@ -1,17 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { mutateBackend } from '../integrations/fetcher';
+import { useState, Suspense } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useApiQuery, useApiMutation } from '../integrations/api';
+import { LoginButton } from '../components/LoginButton';
+import { LogoutButton } from '../components/LogoutButton';
+import styles from '../styles/courses.module.css';
 import { CourseCreateIn, CourseUpdateIn, CourseOut } from '@repo/api/courses';
-import { useState } from 'react';
-import { Suspense } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useApiQuery } from "../integrations/api";
-import { LoginButton } from "../components/LoginButton";
-import { LogoutButton } from "../components/LogoutButton";
-import styles from "../styles/courses.module.css";
 
-
-type Course = { // Matches database table columns
+type Course = {
   id: number;
   course_code: string;
   course_title: string;
@@ -25,8 +22,10 @@ export const Route = createFileRoute('/manage-courses')({
 });
 
 function RouteComponent() {
-  const { data, showLoading, error } = useApiQuery<Course[]>(["courses"], "/courses");
-  
+  //const queryClient = useQueryClient();
+  const { isAuthenticated, isLoading } = useAuth0();
+
+  const { data, showLoading, error } = useApiQuery<Course[]>(['courses'], '/courses');
 
   const [newCourseCode, setNewCourseCode] = useState('');
   const [newTitle, setNewTitle] = useState('');
@@ -37,56 +36,37 @@ function RouteComponent() {
   const [updateCourseCode, setUpdateCourseCode] = useState('');
   const [updateTitle, setUpdateTitle] = useState('');
   const [updateDescription, setUpdateDescription] = useState('');
-  const [updateInstructorId, setUpdateInstructorId] = useState<number >();
+  const [updateInstructorId, setUpdateInstructorId] = useState<number>();
 
   const [deleteId, setDeleteId] = useState<number | ''>('');
 
-  const queryClient = useQueryClient();
-
-  // Create, Update, Delete mutations
-
-  const createMutation = useMutation({
-    mutationFn: (newCourse: CourseCreateIn) =>
-      mutateBackend<CourseCreateIn, CourseOut>('/courses', 'POST', newCourse),
-    onSuccess: (data: CourseOut) => {
-      queryClient.setQueryData(['courses', data.id], data);
-      setNewCourseCode('');
-      setNewTitle('');
-      setNewDescription('');
-      setNewInstructorId(1);
-    },
+  const createMutation = useApiMutation<CourseCreateIn, CourseOut>({
+    endpoint: (variables) => ({
+      path: '/courses',
+      method: 'POST',
+    }),
+    invalidateKeys: [['courses']],
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, ...patch }: { id: number } & CourseUpdateIn) =>
-      mutateBackend<CourseUpdateIn, CourseOut>(
-        `/courses/${Number(id)}`, 
-        'PATCH',
-        patch,
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      setUpdateId('');
-      setUpdateCourseCode('');
-      setUpdateTitle('');
-      setUpdateDescription('');
-      setUpdateInstructorId(undefined);
-    },
+
+  const updateMutation = useApiMutation<
+    CourseUpdateIn & { id: number },
+    CourseOut
+  >({
+    endpoint: (v) => ({
+      path: `/courses/${v.id}`,
+      method: 'PATCH',
+    }),
+    invalidateKeys: [['courses']],
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) =>
-      mutateBackend<undefined, { message: string }>(
-        `/courses/${Number(id)}`, 
-        'DELETE',
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      setDeleteId('');
-    },
-  });
-
-  const { isAuthenticated, isLoading } = useAuth0();
+  const deleteMutation = useApiMutation<{ id: number }, void>({
+    endpoint: (variables) => ({
+      path: `/courses/${variables.id}`,
+      method: "DELETE",
+    }),
+    invalidateKeys: [["courses"]],
+  })
 
   if (isLoading) {
     return <div className={styles.main}>Checking authentication...</div>;
@@ -106,26 +86,26 @@ function RouteComponent() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
         <LogoutButton />
       </div>
+
       <header>
         <h1>Manage Courses</h1>
       </header>
-      <p>Use the forms below to create, update, or delete courses. Ensure you fill out all fields not denoted optional. A Course Data JSON is displayed underneath the forms-- <strong>in order to see your changes reflected in the data, refresh the page</strong>.</p>
+      <p>
+        Use the forms below to create, update, or delete courses. Ensure you fill out all fields not denoted optional.
+        A Course Data JSON is displayed underneath the forms — <strong>refresh the page</strong> to see your changes.
+      </p>
 
       <section style={{ marginBottom: '2rem' }}>
         <h2>Create a New Course</h2>
 
         {createMutation.isError && (
-          <div style={{ color: 'red' }}>
-            Error creating course: {createMutation.error.message}
-          </div>
+          <div style={{ color: 'red' }}>Error creating course: {createMutation.error?.message}</div>
         )}
         {createMutation.isSuccess && (
-          <div style={{ color: 'green' }}>
-            Course created successfully! ID: {createMutation.data.id}
-          </div>
+          <div style={{ color: 'green' }}>Course created successfully! ID: {createMutation.data.id}</div>
         )}
 
         <div>
@@ -156,14 +136,14 @@ function RouteComponent() {
           <input
             type="number"
             placeholder="Instructor ID"
-            value={newInstructorId}
+            value={newInstructorId ?? ''}
             onChange={(e) => setNewInstructorId(Number(e.target.value))}
           />
         </div>
-        
+
         <div>
           <button
-            onClick={() => {
+            onClick={() =>
               createMutation.mutate({
                 course_code: newCourseCode,
                 course_title: newTitle,
@@ -171,37 +151,30 @@ function RouteComponent() {
                 instructor_id: newInstructorId ?? 1,
                 start_date: new Date().toISOString(),
                 end_date: new Date(
-                  new Date().setMonth(new Date().getMonth() + 1),
+                  new Date().setMonth(new Date().getMonth() + 1)
                 ).toISOString(),
-              });
-            }}
+              })
+            }
             disabled={createMutation.isPending}
           >
             {createMutation.isPending ? 'Creating...' : 'Create Course'}
           </button>
         </div>
 
-        <div>
-          <ul>
-            <li><strong>Note:</strong> The <em>course_code</em> can be max. 7 characters long.</li>
-            <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor <em>(e.g. 1, 3, 7)</em>.</li>
-          </ul>
-        </div>
-
+        <ul>
+          <li><strong>Note:</strong> <em>course_code</em> can be max. 7 characters long.</li>
+          <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor (e.g. 1, 3, 7).</li>
+        </ul>
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
         <h2>Update an Existing Course</h2>
 
         {updateMutation.isError && (
-          <div style={{ color: 'red' }}>
-            Error updating course: {updateMutation.error.message}
-          </div>
+          <div style={{ color: 'red' }}>Error updating course: {updateMutation.error?.message}</div>
         )}
         {updateMutation.isSuccess && (
-          <div style={{ color: 'green' }}>
-            Course updated successfully! ID: {updateMutation.data.id}
-          </div>
+          <div style={{ color: 'green' }}>Course updated successfully!</div>
         )}
 
         <div>
@@ -209,9 +182,7 @@ function RouteComponent() {
             type="number"
             placeholder="Course ID"
             value={updateId}
-            onChange={(e) =>
-              setUpdateId(e.target.value ? Number(e.target.value) : '')
-            }
+            onChange={(e) => setUpdateId(e.target.value ? Number(e.target.value) : '')}
           />
         </div>
         <div>
@@ -240,9 +211,9 @@ function RouteComponent() {
         </div>
         <div>
           <input
-            type="text"
+            type="number"
             placeholder="New Instructor ID (optional)"
-            value={updateInstructorId}
+            value={updateInstructorId ?? ''}
             onChange={(e) => setUpdateInstructorId(Number(e.target.value))}
           />
         </div>
@@ -264,22 +235,17 @@ function RouteComponent() {
           </button>
         </div>
 
-        <div>
-          <ul>
-            <li><strong>Note:</strong> The <em>course_code</em> can be max. 7 characters long.</li>
-            <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor <em>(e.g. 1, 3, 7)</em>.</li>
-          </ul>
-        </div>
-
+        <ul>
+          <li><strong>Note:</strong> <em>course_code</em> can be max. 7 characters long.</li>
+          <li><strong>Note:</strong> Ensure <em>instructor_id</em> corresponds with an existing instructor (e.g. 1, 3, 7).</li>
+        </ul>
       </section>
 
       <section style={{ marginBottom: '2rem' }}>
         <h2>Delete a Course</h2>
 
         {deleteMutation.isError && (
-          <div style={{ color: 'red' }}>
-            Error deleting course: {deleteMutation.error.message}
-          </div>
+          <div style={{ color: 'red' }}>Error deleting course: {deleteMutation.error?.message}</div>
         )}
         {deleteMutation.isSuccess && (
           <div style={{ color: 'green' }}>Course deleted successfully!</div>
@@ -290,16 +256,14 @@ function RouteComponent() {
             type="number"
             placeholder="Course ID"
             value={deleteId}
-            onChange={(e) =>
-              setDeleteId(e.target.value ? Number(e.target.value) : '')
-            }
+            onChange={(e) => setDeleteId(e.target.value ? Number(e.target.value) : '')}
           />
         </div>
         <div>
           <button
             onClick={() => {
               if (!deleteId) return;
-              deleteMutation.mutate(Number(deleteId));
+              deleteMutation.mutate({ id: Number(deleteId) });
             }}
             disabled={deleteMutation.isPending}
           >
@@ -313,14 +277,13 @@ function RouteComponent() {
       <div>
         <a href="/courses">Back to Courses</a>
       </div>
-      
+
       <Suspense fallback={<div>Loading course data...</div>}>
-        <div style={{ marginTop: "2rem" }}>
+        <div style={{ marginTop: '2rem' }}>
           <h2>Course Data Fetch</h2>
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       </Suspense>
-
     </div>
   );
 }
