@@ -19,7 +19,7 @@ export const Route = createFileRoute("/courses/")({
 });
 
 function CoursesTab() {
-  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
 
   const { data, showLoading, error } = useApiQuery<Course[]>(["courses"], "/courses");
 
@@ -28,12 +28,9 @@ function CoursesTab() {
   }
 
   if (!isAuthenticated) {
-    loginWithRedirect({
-      appState: { returnTo: "/courses" },
-    });
     return (
       <div className={styles.main}>
-        <h2>Redirecting to login...</h2>
+        <h2>Please log in to continue</h2>
         <LoginButton />
       </div>
     );
