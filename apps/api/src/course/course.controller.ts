@@ -22,13 +22,13 @@ export class CourseController {
         return this.courseService.getCourseById(id);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    //@UseGuards(AuthGuard('jwt'))
     @Patch(':id')
     update(@Param('id', ParseIntPipe) id: number, @Body() updateCourseDto: CourseUpdateIn) {
         return this.courseService.update(id, updateCourseDto);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    //@UseGuards(AuthGuard('jwt'))
     @Post()
     @UsePipes(new ZodPipe(CourseCreateIn))
     create(@Body() createCourseDto: CourseCreateIn, @CurrentUser() user: JwtUser) {
@@ -36,7 +36,7 @@ export class CourseController {
         return this.courseService.create(createCourseDto);
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    //@UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.courseService.remove(id);
