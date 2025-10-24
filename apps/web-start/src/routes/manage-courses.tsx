@@ -27,7 +27,6 @@ function RouteComponent() {
 
   const { data, showLoading, error } = useApiQuery<Course[]>(['courses'], '/courses');
 
-  // --- Form state ---
   const [newCourseCode, setNewCourseCode] = useState('');
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
@@ -41,7 +40,6 @@ function RouteComponent() {
 
   const [deleteId, setDeleteId] = useState<number | ''>('');
 
-  // --- Mutations using Auth0-aware API client ---
   const createMutation = useApiMutation<CourseCreateIn, CourseOut>({
     endpoint: (variables) => ({
       path: '/courses',
@@ -70,7 +68,6 @@ function RouteComponent() {
     invalidateKeys: [["courses"]],
   })
 
-  // --- Auth Guard ---
   if (isLoading) {
     return <div className={styles.main}>Checking authentication...</div>;
   }
@@ -87,7 +84,6 @@ function RouteComponent() {
   if (showLoading) return <div className={styles.main}>Loading course management page...</div>;
   if (error) return <div className={styles.main}>Error: {error.message}</div>;
 
-  // --- UI ---
   return (
     <div style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
@@ -102,7 +98,6 @@ function RouteComponent() {
         A Course Data JSON is displayed underneath the forms — <strong>refresh the page</strong> to see your changes.
       </p>
 
-      {/* ---------------- CREATE COURSE ---------------- */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Create a New Course</h2>
 
@@ -172,7 +167,6 @@ function RouteComponent() {
         </ul>
       </section>
 
-      {/* ---------------- UPDATE COURSE ---------------- */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Update an Existing Course</h2>
 
@@ -247,7 +241,6 @@ function RouteComponent() {
         </ul>
       </section>
 
-      {/* ---------------- DELETE COURSE ---------------- */}
       <section style={{ marginBottom: '2rem' }}>
         <h2>Delete a Course</h2>
 

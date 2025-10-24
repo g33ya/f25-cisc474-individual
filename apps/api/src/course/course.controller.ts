@@ -35,9 +35,9 @@ export class CourseController {
         return this.courseService.create(createCourseDto);
     }
 
-@Delete(':id')
-remove(@Param('id', ParseIntPipe) id: number) {
-  return this.courseService.remove(id);
-}
+    @Delete(':id')
+    remove(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.remove(id);
+    }
 
 }
