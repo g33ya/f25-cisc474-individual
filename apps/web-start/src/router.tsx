@@ -10,7 +10,7 @@ import { routeTree } from './routeTree.gen';
 export const getRouter = () => {
   const rqContext = TanstackQuery.getContext();
 
-  // Create the redirect URI based on the current origin (undefined during SSR)
+  // Create the redirect URI based on the current origin, which may be undefined during SSR
   const redirect_uri =
     typeof window !== 'undefined'
       ? window.location.origin + '/courses'
@@ -22,25 +22,17 @@ export const getRouter = () => {
     defaultPreload: 'intent',
     Wrap: (props: { children: React.ReactNode }) => {
       return (
-        <>
-          {typeof window !== 'undefined' ? (
-            <Auth0Provider
-              domain={import.meta.env.VITE_AUTH0_DOMAIN}
-              clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
-              authorizationParams={{
-                redirect_uri,
-              }}
-            >
-              <TanstackQuery.Provider {...rqContext}>
-                {props.children}
-              </TanstackQuery.Provider>
-            </Auth0Provider>
-          ) : (
-            <TanstackQuery.Provider {...rqContext}>
-              {props.children}
-            </TanstackQuery.Provider>
-          )}
-        </>
+        <Auth0Provider
+          domain={import.meta.env.VITE_AUTH0_DOMAIN}
+          clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+          authorizationParams={{
+            redirect_uri: redirect_uri,
+          }}
+        >
+          <TanstackQuery.Provider {...rqContext}>
+            {props.children}
+          </TanstackQuery.Provider>
+        </Auth0Provider>
       );
     },
   });
